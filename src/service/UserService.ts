@@ -12,7 +12,16 @@ export default class UserService {
     return this.userRepository.getUsers();
   }
 
-  async saveUser(data: UserDto){
-    return this.userRepository.createUser(data);
+  async saveUser(data: UserDto): Promise<void>{
+
+    const {email} = data;
+
+    const userExist = await this.userRepository.getUser(email);
+
+    if(!userExist) {
+      throw new Error('Usuario já cadastrado');
+    }
+    this.userRepository.createUser(data);
+    
   }
 }
